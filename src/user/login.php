@@ -1,2 +1,5 @@
 <?php
-echo $_ENV["DB_PORT"];
+
+namespace app\user;
+
+var_dump(null === null);

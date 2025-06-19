@@ -3,10 +3,17 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 if (file_exists("../{$path}.php")) {
     require_once '../../vendor/autoload.php';
+    $config = require_once '../../config.php';
 
-    $dotenv = Dotenv\Dotenv::createImmutable("../../");
-    $dotenv->load();
+    if ($config['is_debug']) {
+        $dotenv = Dotenv\Dotenv::createImmutable("../../");
+        $dotenv->load();
 
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Headers: Content-Type");
+    }
+
+    header("Content-Type: application/json");
     require_once "../{$path}.php";
 } else {
     http_response_code(404);

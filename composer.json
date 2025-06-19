@@ -1,0 +1,18 @@
+{
+    "name": "xurib/shop_personal_backend",
+    "description": "商城独立站后台",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "app\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "陆家伟"
+        }
+    ],
+    "require-dev": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

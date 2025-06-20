@@ -31,10 +31,14 @@ if ($user) {
     exit(json_encode($response));
 }
 
-$stmt = $db->conn->prepare("INSERT INTO user (username, password) VALUES (?, ?)");
+$stmt = $db->conn->prepare("INSERT INTO user (username, password, avatar) VALUES (?, ?, '/images/avatar.png')");
 $status = $stmt->execute([$body['username'], md5(md5($body['password']) . $config['salt'])]);
+$id = $db->conn->lastInsertId();
 $db->close();
 if ($status) {
+    session_start();
+    $_SESSION['id'] = $id;
+    $_SESSION['username'] = $body['username'];
     $response['status'] = 1;
     $response['msg'] = '注册成功！';
 } else {

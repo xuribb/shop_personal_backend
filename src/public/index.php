@@ -8,12 +8,11 @@ if (file_exists("../{$path}.php")) {
     if ($config['is_debug']) {
         $dotenv = Dotenv\Dotenv::createImmutable("../../");
         $dotenv->load();
-
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Allow-Headers: Content-Type");
     }
 
     header("Content-Type: application/json");
+    session_save_path("../../runtime/session");
+
     require_once "../{$path}.php";
 } else {
     http_response_code(404);

@@ -15,6 +15,12 @@ if (empty($body['username']) || empty($body['password'])) {
     exit(json_encode($response));
 }
 
+if (empty($body['captcha']) || strtoupper($_SESSION['captcha']) != strtoupper($body['captcha'])) {
+    $response['status'] = 0;
+    $response['msg'] = '验证码错误!';
+    exit(json_encode($response));
+}
+
 $db = new DataBase();
 if ($db->conn === null) {
     $response['status'] = 0;
@@ -22,12 +28,11 @@ if ($db->conn === null) {
     exit(json_encode($response));
 }
 
-$stmt = $db->conn->prepare("SELECT * from user where username = ? and password = ?");
-$status = $stmt->execute([$body['username'], md5(md5($body['password']).$config['salt'])]);
+$stmt = $db->conn->prepare("SELECT * from user where username = ?");
+$status = $stmt->execute([$body['username']]);
 $user = $stmt->fetch();
 $db->close();
-if ($user) {
-    session_start();
+if ($user && password_verify($body['password'], $user['password'])) {
     $_SESSION['id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
     $response['status'] = 1;

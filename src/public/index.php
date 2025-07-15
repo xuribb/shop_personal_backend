@@ -11,7 +11,6 @@ if (file_exists("../{$path}.php")) {
     }
 
     header("Content-Type: application/json");
-    session_save_path("../../runtime/session");
 
     require_once "../{$path}.php";
 } else {

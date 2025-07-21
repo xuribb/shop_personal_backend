@@ -1,5 +1,6 @@
-/runtime
+/runtime/log/*
 !/runtime/log/.gitkeep
+/runtime/session/*
 !/runtime/session/.gitkeep
 
 /vendor

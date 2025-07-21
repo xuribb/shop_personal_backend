@@ -1,2 +1,6 @@
+/runtime
+!/runtime/log/.gitkeep
+!/runtime/session/.gitkeep
+
 /vendor
 /.env

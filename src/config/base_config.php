@@ -11,8 +11,15 @@ if (empty($_SESSION['id'])) {
     exit(json_encode($response));
 }
 
-$body = file_get_contents('php://input');
-$body = json_decode($body, true);
+if (!empty($_FILES)) {
+    $uploadDir = '../public/upload/';
+
+    $ext = pathinfo($_FILES['site_logo']['name'], PATHINFO_EXTENSION);
+    $filename = uniqid() . '.' . $ext;
+    $destination = $uploadDir . $filename;
+    move_uploaded_file($_FILES['site_logo']['tmp_name'], $destination);
+    $_POST['site_logo'] = '/upload/' . $filename;
+}
 
 $db = new DataBase();
 if ($db->conn === null) {
@@ -21,7 +28,7 @@ if ($db->conn === null) {
     exit(json_encode($response));
 }
 
-if ($body['type'] === 'query') {
+if ($_POST['type'] === 'query') {
     $stmt = $db->conn->prepare("SELECT * from base_config where id = 1");
     $status = $stmt->execute();
     $config = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -33,9 +40,9 @@ if ($body['type'] === 'query') {
         $response['data'] = $config;
         exit(json_encode($response));
     }
-} elseif ($body['type'] === 'update') {
+} elseif ($_POST['type'] === 'update') {
     $stmt = $db->conn->prepare("UPDATE base_config SET site_name=?,site_logo=?,beian=?,com_name=?,com_loc=?,kefu_tel=?,kefu_qq=? where id = 1");
-    $status = $stmt->execute([$body['site_name'], $body['site_logo'], $body['beian'], $body['com_name'], $body['com_loc'], $body['kefu_tel'], $body['kefu_qq']]);
+    $status = $stmt->execute([$_POST['site_name'], $_POST['site_logo'], $_POST['beian'], $_POST['com_name'], $_POST['com_loc'], $_POST['kefu_tel'], $_POST['kefu_qq']]);
     $db->close();
 
     if ($status) {

@@ -1,3 +1,5 @@
+/.idea
+
 /runtime/log/*
 !/runtime/log/.gitkeep
 /runtime/session/*

@@ -4,14 +4,16 @@ namespace app\user;
 
 use app\common\DataBase;
 
-$body = file_get_contents('php://input');
-$body = json_decode($body, true);
-
 $response = [];
-
-if (empty($body['username']) || empty($body['password'])) {
+if (empty($_POST['username']) || empty($_POST['password'])) {
     $response['status'] = 0;
     $response['msg'] = '用户名或密码错误!';
+    exit(json_encode($response));
+}
+
+if (empty($_POST['captcha']) || strtoupper($_SESSION['captcha']) != strtoupper($_POST['captcha'])) {
+    $response['status'] = 0;
+    $response['msg'] = '验证码错误!';
     exit(json_encode($response));
 }
 
@@ -23,7 +25,7 @@ if ($db->conn === null) {
 }
 
 $stmt = $db->conn->prepare("SELECT id from user where username = ?");
-$status = $stmt->execute([$body['username']]);
+$status = $stmt->execute([$_POST['username']]);
 $user = $stmt->fetch();
 if ($user) {
     $response['status'] = 0;
@@ -32,13 +34,12 @@ if ($user) {
 }
 
 $stmt = $db->conn->prepare("INSERT INTO user (username, password, avatar) VALUES (?, ?, '/images/avatar.png')");
-$status = $stmt->execute([$body['username'], md5(md5($body['password']) . $config['salt'])]);
+$status = $stmt->execute([$_POST['username'], password_hash($_POST['password'], PASSWORD_DEFAULT)]);
 $id = $db->conn->lastInsertId();
 $db->close();
 if ($status) {
-    session_start();
     $_SESSION['id'] = $id;
-    $_SESSION['username'] = $body['username'];
+    $_SESSION['username'] = $_POST['username'];
     $response['status'] = 1;
     $response['msg'] = '注册成功！';
 } else {

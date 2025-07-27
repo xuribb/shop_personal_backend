@@ -4,18 +4,14 @@ namespace app\user;
 
 use app\common\DataBase;
 
-$body = file_get_contents('php://input');
-$body = json_decode($body, true);
-
 $response = [];
-
-if (empty($body['username']) || empty($body['password'])) {
+if (empty($_POST['username']) || empty($_POST['password'])) {
     $response['status'] = 0;
     $response['msg'] = '用户名或密码错误!';
     exit(json_encode($response));
 }
 
-if (empty($body['captcha']) || strtoupper($_SESSION['captcha']) != strtoupper($body['captcha'])) {
+if (empty($_POST['captcha']) || strtoupper($_SESSION['captcha']) != strtoupper($_POST['captcha'])) {
     $response['status'] = 0;
     $response['msg'] = '验证码错误!';
     exit(json_encode($response));
@@ -29,10 +25,10 @@ if ($db->conn === null) {
 }
 
 $stmt = $db->conn->prepare("SELECT * from user where username = ?");
-$status = $stmt->execute([$body['username']]);
+$status = $stmt->execute([$_POST['username']]);
 $user = $stmt->fetch();
 $db->close();
-if ($user && password_verify($body['password'], $user['password'])) {
+if ($user && password_verify($_POST['password'], $user['password'])) {
     $_SESSION['id'] = $user['id'];
     $_SESSION['username'] = $user['username'];
     $response['status'] = 1;

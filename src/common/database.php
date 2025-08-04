@@ -8,6 +8,7 @@ use PDOException;
 class DataBase
 {
     public $conn = null;
+
     public function __construct()
     {
         try {
@@ -15,9 +16,12 @@ class DataBase
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn = $conn;
         } catch (PDOException $e) {
-            $this->conn = null;
+            $response['status'] = 0;
+            $response['msg'] = '数据库错误，请稍后重试!';
+            exit(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
     }
+
     public function close()
     {
         $this->conn = null;

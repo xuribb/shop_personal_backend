@@ -6,18 +6,7 @@ use app\common\DataBase;
 use PDO;
 
 $response = [];
-if (empty($_SESSION['id'])) {
-    $response['status'] = 0;
-    $response['msg'] = '请重新登录后重试!';
-    exit(json_encode($response));
-}
-
 $db = new DataBase();
-if ($db->conn === null) {
-    $response['status'] = 0;
-    $response['msg'] = '网络错误，请稍后重试!';
-    exit(json_encode($response));
-}
 
 if ($_POST['type'] === 'save') {
     $stmt = $db->conn->prepare("INSERT INTO shop_category(category_name, order_id) VALUES(?, ?)");
@@ -71,4 +60,4 @@ if ($_POST['type'] === 'save') {
     }
 }
 
-exit(json_encode($response));
+exit(json_encode($response, JSON_UNESCAPED_UNICODE));

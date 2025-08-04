@@ -6,18 +6,7 @@ use app\common\DataBase;
 use PDO;
 
 $response = [];
-if (empty($_SESSION['id'])) {
-    $response['status'] = 0;
-    $response['msg'] = '请重新登录后重试!';
-    exit(json_encode($response));
-}
-
 $db = new DataBase();
-if ($db->conn === null) {
-    $response['status'] = 0;
-    $response['msg'] = '网络错误，请稍后重试!';
-    exit(json_encode($response));
-}
 
 if ($_POST['type'] === 'save') {
     if (!empty($_FILES['shop_img'])) {

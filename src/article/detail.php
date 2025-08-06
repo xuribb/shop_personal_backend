@@ -8,9 +8,9 @@ $response = [];
 $db = new DataBase();
 
 if ($_POST['type'] === 'query') {
-    $stmt = $db->conn->prepare("SELECT content FROM article_detail where aid = ?");
+    $stmt = $db->conn->prepare("SELECT update_time,content FROM article_detail where aid = ?");
     $stmt->execute([$_POST['aid']]);
-    $content = $stmt->fetch(PDO::FETCH_COLUMN);
+    $content = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($content === false) {
         $stmt = $db->conn->prepare("INSERT INTO article_detail(aid) VALUES(?)");

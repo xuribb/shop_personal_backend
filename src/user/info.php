@@ -4,7 +4,6 @@ namespace app\user;
 
 use app\common\DataBase;
 
-session_start();
 if (empty($_SESSION['id'])) {
     $response['status'] = 0;
     $response['msg'] = '请重新登录后重试!';

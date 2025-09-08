@@ -11,7 +11,7 @@ if (file_exists("../{$path}.php")) {
     }
 
     header("Content-Type: application/json");
-
+    session_start();
     require_once "../{$path}.php";
 } else {
     http_response_code(404);

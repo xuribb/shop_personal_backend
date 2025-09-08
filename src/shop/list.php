@@ -13,7 +13,7 @@ if ($_POST['type'] === 'save') {
         $uploadDir = '../public/upload/';
 
         $ext = pathinfo($_FILES['shop_img']['name'], PATHINFO_EXTENSION);
-        $filename = uniqid('shop_',true) . '.' . $ext;
+        $filename = uniqid('shop_', true) . '.' . $ext;
         $destination = $uploadDir . $filename;
         move_uploaded_file($_FILES['shop_img']['tmp_name'], $destination);
         $_POST['shop_img'] = '/upload/' . $filename;
@@ -35,6 +35,9 @@ if ($_POST['type'] === 'save') {
     if (!empty($_POST['id'])) {
         $query_cd .= "id = {$_POST['id']} AND ";
     }
+    if (!empty($_POST['ids'])) {
+        $query_cd .= "id in ({$_POST['ids']}) AND ";
+    }
     if (!empty($_POST['category_id'])) {
         $query_cd .= "category_id = '{$_POST['category_id']}' AND ";
     }
@@ -43,7 +46,8 @@ if ($_POST['type'] === 'save') {
     }
     $query_cd .= "status=1";
 
-    $_POST['page_size'] = $_POST['page_size'] ? $_POST['page_size'] : 10;
+    $_POST['page_size'] = empty($_POST['page_size']) ? 10 : $_POST['page_size'];
+    $_POST['page_num'] = empty($_POST['page_num']) ? 1 : $_POST['page_num'];
     $limit = ($_POST['page_num'] - 1) * $_POST['page_size'] . ',' . $_POST['page_size'];
 
     $stmt = $db->conn->prepare("SELECT *,COUNT(id) OVER() AS total FROM shop_list WHERE {$query_cd} LIMIT {$limit}");

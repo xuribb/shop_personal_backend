@@ -1,5 +1,9 @@
 # 商城独立站后台代码PHP
 
+## 简介
+项目采用原生开发+composer并没有采用任何PHP框架，本项目随前端项目部分停止而停止。
+
+
 ## 环境要求
 
 - php >= 8.3
@@ -18,5 +22,14 @@ composer install           #开发安装
 
 填写相关环境变量
 
-3. 请将Web根目录设置为 **src/public**
+3. 创建数据库 shop_personal，然后修改数据库文件里的域名shop.lujiawei.top为自己的域名，然后导入
+
+4. 请将Web根目录设置为 **src/public**, 可通过修改配置文件达到
+
+5. 伪静态如下
+``` nginx
+location / {  
+ try_files $uri $uri/ /index.php$is_args$query_string;  
+}  
+```
 
